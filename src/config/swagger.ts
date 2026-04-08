@@ -241,6 +241,41 @@ const swaggerOptions: Options = {
           },
         },
       },
+      "/auth/refresh": {
+        post: {
+          tags: ["Auth"],
+          summary: "Refresh access and refresh tokens",
+          description: "Requires a valid `refreshToken` cookie. Issues new access and refresh token cookies.",
+          responses: {
+            "200": {
+              description: "Tokens refreshed successfully",
+              content: {
+                "application/json": {
+                  schema: {
+                    allOf: [
+                      { $ref: "#/components/schemas/SuccessResponse" },
+                      {
+                        properties: {
+                          message: { example: "Tokens refreshed successfully" },
+                          data: { $ref: "#/components/schemas/User" },
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+            "401": {
+              description: "Refresh token missing or invalid",
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/ErrorResponse" },
+                },
+              },
+            },
+          },
+        },
+      },
       "/auth/logout": {
         post: {
           tags: ["Auth"],

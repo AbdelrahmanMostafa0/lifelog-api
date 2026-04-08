@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { ApiError, errorResponse } from "../../utils/response";
+import { Response } from "express";
+import { ApiError } from "../../utils/response";
 import { RegisterDto, LoginDto, GoogleLoginDto } from "./auth.types";
 import { User } from "../../models/user.model";
 import {
@@ -7,6 +7,8 @@ import {
   generateAccessToken,
   generateRefreshToken,
   setAuthCookies,
+  verifyRefreshToken,
+  TokenPayload,
 } from "../../utils/jwt";
 
 export const register = async (data: RegisterDto, res: Response) => {
@@ -66,6 +68,23 @@ export const google = async (data: GoogleLoginDto, res: Response) => {
   const refreshToken = generateRefreshToken(userExists._id.toString());
   setAuthCookies(res, accessToken, refreshToken);
   return userExists;
+};
+
+export const refresh = async (refreshToken: string, res: Response) => {
+  let payload: TokenPayload;
+  try {
+    payload = verifyRefreshToken(refreshToken);
+  } catch {
+    throw new ApiError(401, "Invalid or expired refresh token");
+  }
+  const user = await User.findById(payload.id);
+  if (!user) {
+    throw new ApiError(401, "User not found");
+  }
+  const newAccessToken = generateAccessToken(user._id.toString());
+  const newRefreshToken = generateRefreshToken(user._id.toString());
+  setAuthCookies(res, newAccessToken, newRefreshToken);
+  return user;
 };
 
 export const logout = async (res: Response) => {

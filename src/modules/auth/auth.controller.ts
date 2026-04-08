@@ -64,6 +64,23 @@ export const google = async (req: Request, res: Response) => {
   }
 };
 
+export const refresh = async (req: Request, res: Response) => {
+  const refreshToken = req.cookies?.refreshToken;
+  if (!refreshToken) {
+    return errorResponse(res, "Refresh token missing", 401);
+  }
+  try {
+    const user = await authService.refresh(refreshToken, res);
+    return successResponse(res, user, "Tokens refreshed successfully", 200);
+  } catch (error: unknown) {
+    const errorObj = error as { message: string; statusCode: number };
+    return errorResponse(
+      res,
+      errorObj.message || "Internal server error",
+      errorObj.statusCode || 500,
+    );
+  }
+};
 export const logout = async (req: Request, res: Response) => {
   await authService.logout(res);
   return successResponse(res, null, "User logged out successfully", 200);

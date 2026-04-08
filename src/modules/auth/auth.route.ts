@@ -25,5 +25,6 @@ router.post(
   validate({ body: googleValidatorSchema }),
   authController.google,
 );
+router.post("/refresh", authController.refresh);
 router.post("/logout", authMiddleware, authController.logout);
 export default router;
