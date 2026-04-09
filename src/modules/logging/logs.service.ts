@@ -13,7 +13,7 @@ export const createLog = async (data: createLogDTO, res: Response) => {
 
 export const getLogs = async (userId: string) => {
   try {
-    const logs = await Log.find({ userId });
+    const logs = await Log.find({ userId }).sort({ createdAt: -1 });
     return logs;
   } catch (error) {
     throw error;

@@ -3,5 +3,6 @@ export interface createLogDTO {
   title: string;
   content: string;
   tags?: string[];
+  mood?: string;
   loggedAt?: Date;
 }

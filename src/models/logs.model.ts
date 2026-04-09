@@ -5,6 +5,7 @@ export interface ILog {
   title: string;
   content: string;
   tags: string[];
+  mood: string;
   createdAt: Date;
   loggedAt: Date;
   updatedAt: Date;
@@ -16,6 +17,7 @@ const logSchema = new Schema(
     title: { type: String, default: "" },
     content: { type: String, required: true },
     tags: { type: [String], default: [] },
+    mood: { type: String, default: "" },
     loggedAt: { type: Date, default: Date.now },
   },
   {
